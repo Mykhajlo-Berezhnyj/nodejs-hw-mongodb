@@ -18,10 +18,9 @@ export const setupServer = () => {
 );
 
  app.get('/', (req, res) => {
-    res.json({
-      message: 'Hello. Wellcome to contacts!',
-    });
+    res.send('Hello. Wellcome to contacts!');
   });
+
 
   app.get('/contacts', async (req, res, next) => {
     try {
