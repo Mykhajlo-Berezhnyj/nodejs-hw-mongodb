@@ -5,13 +5,22 @@ import {
   createContactController,
   deleteContactController,
   upsertContactController,
-  pathContactController
+  pathContactController,
+  getNewController,
+  getContactEditController,
 } from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { validateRoute } from '../validators/validateRoute.js';
 
 const router = Router();
 
+router.param('contactId', validateRoute);
+
 router.get('/contacts', ctrlWrapper(getContactsController));
+
+router.get('/contacts/new', ctrlWrapper(getNewController));
+
+router.get('/contacts/:contactId/edit', ctrlWrapper(getContactEditController));
 
 router.get('/contacts/:contactId', ctrlWrapper(getContactsByIdController));
 

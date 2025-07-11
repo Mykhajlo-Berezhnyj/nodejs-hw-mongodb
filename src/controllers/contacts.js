@@ -6,14 +6,16 @@ import {
   getContactsById,
   updateContact,
 } from '../services/contacts.js';
-import { renderContact } from '../utils/renderContact.js';
-import { renderContactsList } from '../utils/renderContactsList.js';
+import { renderContact } from '../render/Contact/renderContact.js';
+import { renderContactsList } from '../render/ContactsList/renderContactsList.js';
+import { renderForm } from '../render/Form/renderForm.js';
 
 export const getContactsController = async (req, res) => {
   const contacts = await getAllContacts();
   const accept = req.headers.accept || '';
   if (accept.includes('text/html')) {
-    res.send(renderContactsList(contacts));
+    const msg = req.query.msg || '';
+    res.send(renderContactsList(contacts, msg));
   } else {
     res.status(200).json({
       status: 200,
@@ -41,16 +43,34 @@ export const getContactsByIdController = async (req, res) => {
   }
 };
 
+export const getNewController = async (req, res) => {
+  res.send(renderForm({}, false));
+};
+
+export const getContactEditController = async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await getContactsById(contactId);
+  if (!contact) {
+    throw createHttpError(404, 'Contact not found');
+  }
+  res.send(renderForm(contact, true));
+};
+
 export const createContactController = async (req, res) => {
-  const student = await createContact(req.body);
+  const contact = await createContact(req.body);
   const accept = req.headers.accept || '';
+  if (!req.body.name || !req.body.phoneNumber || !req.body.contactType) {
+  throw createHttpError(400, 'Missing required fields');
+}
   if (accept.includes('text/html')) {
-    return res.send('Successfully created a contac twith id ${contactId}!');
+    return res.redirect(
+      `/contacts?msg=Successfully+created+a+contac+twith+id+${contact.id}!`,
+    );
   }
   res.status(201).json({
     status: 201,
     message: `Successfully created a contact!`,
-    data: student,
+    data: contact,
   });
 };
 
@@ -63,8 +83,7 @@ export const deleteContactController = async (req, res) => {
   const accept = req.headers.accept || '';
 
   if (accept.includes('text/html')) {
-    res.send('Contact deleted');
-    return;
+    return res.redirect('/contacts?msg=Contact+deleted');
   }
 
   res.status(204).send();
@@ -72,7 +91,7 @@ export const deleteContactController = async (req, res) => {
 
 export const upsertContactController = async (req, res) => {
   const { contactId } = req.params;
-  const result = await updateContact(contactId, req.body, { upcert: true });
+  const result = await updateContact(contactId, req.body, { upsert: true });
   if (!result) {
     throw createHttpError(404, 'Contact not found');
   }
@@ -80,8 +99,12 @@ export const upsertContactController = async (req, res) => {
   const accept = req.headers.accept || '';
   if (accept.includes('text/html')) {
     status === 201
-      ? res.send('Successfully created new contact with id ${contactId}!')
-      : res.send('Successfully updated a cotact with id ${contactId}!');
+      ? res.redirect(
+          `/contacts?msg=Successfully+created+new+contact+with+id+${contactId}!`,
+        )
+      : res.redirect(
+          `/contacts?msg=Successfully+updated+a+contact+with+id+${contactId}!`,
+        );
     return;
   }
   res.status(status).json({
