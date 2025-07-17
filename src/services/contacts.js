@@ -12,27 +12,53 @@ export const getAllContacts = async ({
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = ContactsCollection.find();
+  let contactsQuery = ContactsCollection.find();
 
   if (filter.name) {
-    contactsQuery.where('name').equals(filter.name);
+    contactsQuery.where('name').regex(new RegExp(filter.name, 'i'));
   }
   if (filter.phoneNumber) {
-    contactsQuery.where('phoneNumber').equals(filter.phoneNumber);
+    contactsQuery.where('phoneNumber').regex(new RegExp(filter.phoneNumber));
   }
   if (filter.email !== undefined) {
-  const emailFilter = filter.email ? filter.email : ['', null];
-  contactsQuery.where('email').equals(emailFilter);
+    if (filter.email === 'empty' || filter.email === 'n/a') {
+      contactsQuery.where('email').in(['', null]);
+    } else if (filter.email === '*') {
+      contactsQuery.where('email').nin(['', null]);
+    } else if (filter.email === '') {
+    } else {
+      contactsQuery.where('email').regex(new RegExp(filter.name, 'i'));
+    }
   }
-  if (filter.isFavourite) {
+  if (filter.isFavourite !== undefined) {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
   if (filter.contactType) {
-    contactsQuery.where('contactType').equals(filter.contactType);
+    const types = Array.isArray(filter.contactType)
+      ? filter.contactType
+      : [filter.contactType];
+    contactsQuery.where('contactType').in(types);
   }
-  if (filter.createdAt) {
-    contactsQuery.where('createdAt').equals(filter.createdAt);
+  if (filter.dateFrom || filter.dateTo) {
+    const dateFilter = {};
+
+    if (filter.dateFrom) {
+      const fromDate = new Date(filter.dateFrom);
+      if (!isNaN(fromDate)) {
+        dateFilter.$gte = fromDate;
+      }
+    }
+
+    if (filter.dateTo) {
+      const toDate = new Date(filter.dateTo);
+      if (!isNaN(toDate)) {
+        dateFilter.$lte = toDate;
+      }
+    }
+
+    contactsQuery = contactsQuery.where('createdAt', dateFilter);
   }
+
   if (filter.updatedAt) {
     contactsQuery.where('updatedAt').equals(filter.updatedAt);
   }

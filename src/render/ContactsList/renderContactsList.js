@@ -61,9 +61,10 @@ export const renderContactsList = (
          }" class="form-control form-control-sm"/>
          </th>
           <th>
-         <input type="text" name="email" aria-label= "filter the email" title="filter the email" value="${
+         <span style="display: flex; gap: 10px;" title="title="To search for empty fields, enter 'empty' or 'n/a'; to search for filled fields, enter '*'""><input type="text" name="email" aria-label= "filter the email" title="filter the email" value="${
            query.email || ''
          }" class="form-control form-control-sm"/>
+         i</span>
          </th>
          <th>
          <select name="isFavourite" class="form-select form-select-sm" style="margin-bottom: 6px;">
@@ -71,7 +72,7 @@ export const renderContactsList = (
          <option value="true" ${
            query.isFavourite === 'true' ? 'selected' : ''
          }>True</option>
-         <option value"false" ${
+         <option value="false" ${
            query.isFavourite === 'false' ? 'selected' : ''
          }>False</option>
          </select>
@@ -99,23 +100,25 @@ export const renderContactsList = (
          </div>
          </th>
          <th>
-         <input type="date" name="createdAt" aria-label="filter the createdAt" title="filter the createdAt" value="${
-           query.createdAt || ''
-         }" class="form-control form-control-sm"/>
+         <label>From: <input type="date" name="dateFrom" value="${
+           query.dateFrom || ''
+         }" /></label>
+<label>To: <input type="date" name="dateTo" value="${
+  query.dateTo || ''
+}" /></label>
          </th>
          <th>
-         <input type="date" name="updateAt" aria-label="filter the updateAt" title="filter the updateAt" value="${
-           query.updateAt || ''
-         }" class="form-control form-control-sm"/>
+        <label>From: <input type="date" name="dateFrom" value="${
+          query.dateFrom || ''
+        }" /></label>
+<label>To: <input type="date" name="dateTo" value="${
+  query.dateTo || ''
+}" /></label>
          </th>
-         <th>
-         <input type="text" name="id" aria-label="id" title="filter the id" value="${
-           query.id || ''
-         }"  class="form-control form-control-sm"/>
-         </th>
+         <th></th>
          <th>
          <button type="submit" class="btn btn-sm btn-info">🔁 Apply filters</button>
-         <button type="submit" class="btn btn-sm btn-info">🔁 Reset filters</button>
+         <a href="/contacts" class="btn btn-sm btn-info">🔁 Reset filters</a>
          </th>
          </form>
          </tr>
@@ -128,7 +131,7 @@ export const renderContactsList = (
         <form method="GET" action="/contacts">
         <input type="hidden" name="sortBy" value="${field.key}"/>
         <button type="submit" name="sortContacts" value="${
-          query.sortContacts === 'asc' ? 'decs' : 'asc'
+          query.sortContacts === 'asc' ? 'desc' : 'asc'
         }" class="btn btn-sm btn-outline-secondary">
             ${query.sortContacts === 'asc' ? '⬆️' : '⬇️'}
         </button>

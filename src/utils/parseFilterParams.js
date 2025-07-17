@@ -21,11 +21,20 @@ const parseBoolean = (value) => {
 };
 
 const parseType = (type) => {
-  const isString = typeof type === 'string';
-  if (!isString) return;
-  const isType = (type) => ['work', 'home', 'personal'].includes(type);
-  if (isType(type)) return type;
-  return undefined;
+  const validTypes = ['work', 'home', 'personal'];
+  if (!type) return undefined;
+  let typesArray = [];
+
+  if (Array.isArray(type)) {
+    typesArray = type;
+  } else if (typeof type === 'string') {
+    typesArray = [type];
+  } else {
+    return undefined;
+  }
+
+  const filtered = typesArray.filter((type) => validTypes.includes(type));
+  return filtered.length > 0 ? filtered : undefined;
 };
 
 export const parseFilterParams = (query) => {
@@ -35,7 +44,9 @@ export const parseFilterParams = (query) => {
     email: parseName(query.email),
     isFavourite: parseBoolean(query.isFavourite),
     contactType: parseType(query.contactType),
-    createdAt: parseNumber(query.createdAt),
-    updatedAt: parseNumber(query.updatedAt),
+    dateFrom: query.dateFrom || undefined,
+    dateTo: query.dateTo || undefined,
+    // createdAt: parseNumber(query.createdAt),
+    // updatedAt: parseNumber(query.updatedAt),
   };
 };
