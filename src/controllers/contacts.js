@@ -28,7 +28,17 @@ export const getContactsController = async (req, res) => {
   const accept = req.headers.accept || '';
   if (accept.includes('text/html')) {
     const msg = req.query.msg || '';
-    res.send(renderContactsList(contacts, msg));
+    res.send(
+      renderContactsList(contacts.data, msg, {
+        page: contacts.page,
+        totalItems: contacts.totalItems,
+        totalPages: contacts.totalPages,
+        hasNextPage: contacts.hasNextPage,
+        hasPreviousPage: contacts.hasPreviousPage,
+        perPage: contacts.perPage,
+        query: req.query,
+      }),
+    );
   } else {
     res.status(200).json({
       status: 200,

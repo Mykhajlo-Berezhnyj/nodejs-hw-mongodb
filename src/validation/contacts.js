@@ -18,7 +18,7 @@ export const createContactsSchema = Joi.object({
       'string.phoneNumber': 'Phone number must be valid for Ukraine',
       'any.required': 'Phone number is required',
     }),
-  email: Joi.string().email().messages({
+  email: Joi.string().email().optional().empty('').messages({
     'string.email': 'Email must be a valid email address',
   }),
   isFavourite: Joi.boolean().messages({
@@ -32,7 +32,6 @@ export const createContactsSchema = Joi.object({
       'any.required': 'Contact type is required',
     }),
 }).unknown(false);
-
 
 export const upDateContactsSchema = Joi.object({
   name: Joi.string().min(3).max(20).messages({
@@ -52,11 +51,9 @@ export const upDateContactsSchema = Joi.object({
   isFavourite: Joi.boolean().messages({
     'boolean.base': 'isFavourite must be a boolean value',
   }),
-  contactType: Joi.string()
-    .valid('work', 'home', 'personal')
-    .messages({
-      'any.only': 'Contact type must be one of work, home, or personal',
-    }),
-}).min(1).unknown(false);
-
-
+  contactType: Joi.string().valid('work', 'home', 'personal').messages({
+    'any.only': 'Contact type must be one of work, home, or personal',
+  }),
+})
+  .min(1)
+  .unknown(false);

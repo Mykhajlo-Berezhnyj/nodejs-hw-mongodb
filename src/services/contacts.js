@@ -20,10 +20,9 @@ export const getAllContacts = async ({
   if (filter.phoneNumber) {
     contactsQuery.where('phoneNumber').equals(filter.phoneNumber);
   }
-  if (filter.email) {
-    contactsQuery.where('email').equals(filter.email);
-  } else {
-    contactsQuery.where('email').in(['', null]);
+  if (filter.email !== undefined) {
+  const emailFilter = filter.email ? filter.email : ['', null];
+  contactsQuery.where('email').equals(emailFilter);
   }
   if (filter.isFavourite) {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
