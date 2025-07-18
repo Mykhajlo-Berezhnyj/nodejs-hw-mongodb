@@ -14,11 +14,17 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 export const getContactsController = async (req, res) => {
+  if (req.query.action === 'reset') {
+    const savedPerPage = new URLSearchParams();
+    if (req.query.perPage) savedPerPage.set('perPage', req.query.perPage);
+
+    return res.redirect(`/contacts?${savedPerPage.toString()}`);
+  }
+
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortContacts, sortBy } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
-  console.log('=== getContactsController called ===');
-  console.log(req.query.contactType);
+
   const contacts = await getAllContacts({
     page,
     perPage,

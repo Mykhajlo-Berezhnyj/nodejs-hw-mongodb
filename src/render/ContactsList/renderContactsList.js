@@ -26,8 +26,18 @@ export const renderContactsList = (
       --bs-table-hover-bg: rgb(6, 35, 61);
       --bs-table-hover-color: white !important;
     }
+      th {
+       align-content: center;
+       text-align: center;
+      }
+      td {
+      align-content: center;
+      text-align: center;
+      }
       td.empty {
-        background-color: #ffcccc; /* light red */
+        background-color: #ffcccc;
+        align-content: center;
+        text-align: center;
       }
       tr {
         cursor: pointer;
@@ -46,22 +56,23 @@ export const renderContactsList = (
 </div>
 </div>
         <table class="table table-hover table-bordered table-striped">
-         <thead class="table-adark">
-         <tr>
+         <thead class="table-dark">
+         <tr">
          <form method="GET" action="/contacts">
          <th>Filter</th>
          <th>
-         <input type="text" name="name" aria-label= "filter the name" title="filter the name" value="${
+         <input type="text" placeholder="Filter by name" name="name" aria-label= "filter the name" title="filter the name" value="${
            query.name || ''
          }" class="form-control form-control-sm"/>
+         <input type="hidden" name="perPage" value="${query.perPage || 10}" />
          </th>
          <th>
-         <input type="text" name="phoneNumber" aria-label= "filter the phone Number" title="filter the phone Number" value="${
+         <input type="text" name="phoneNumber" placeholder="Filter by phone number" aria-label= "filter the phone Number" title="filter the phone Number" value="${
            query.phoneNumber || ''
          }" class="form-control form-control-sm"/>
          </th>
           <th>
-         <span style="display: flex; gap: 10px;" title="title="To search for empty fields, enter 'empty' or 'n/a'; to search for filled fields, enter '*'""><input type="text" name="email" aria-label= "filter the email" title="filter the email" value="${
+         <span style="display: flex; gap: 10px;" title="To search for empty fields, enter 'empty' or 'n/a'; to search for filled fields, enter '*'"><input type="text" name="email" placeholder="Filter by email" aria-label= "filter the email" title="filter the email" value="${
            query.email || ''
          }" class="form-control form-control-sm"/>
          i</span>
@@ -77,48 +88,54 @@ export const renderContactsList = (
          }>False</option>
          </select>
          </th>
-         <th>
+         <th style="text-align: start">
          <div style="display: flex; flex-direction: column;">
          <label>
-         <input type="checkbox" name="contactType" value="work" ${
-           isChecked(query.contactType, 'work') ? 'checked' : ''
+         <input type="checkbox" name="type" value="work" ${
+           isChecked(query.type, 'work') ? 'checked' : ''
          }/>
          Work
          </label>
          <label>
-         <input type="checkbox" name="contactType" value="home" ${
-           isChecked(query.contactType, 'home') ? 'checked' : ''
+         <input type="checkbox" name="type" value="home" ${
+           isChecked(query.type, 'home') ? 'checked' : ''
          }/>
          Home
          </label>
          <label>
-         <input type="checkbox" name="contactType" value="personal" ${
-           isChecked(query.contactType, 'personal') ? 'checked' : ''
+         <input type="checkbox" name="type" value="personal" ${
+           isChecked(query.type, 'personal') ? 'checked' : ''
          } />
          Personal
          </label>
          </div>
          </th>
          <th>
-         <label>From: <input type="date" name="dateFrom" value="${
-           query.dateFrom || ''
+         <label>From: <input type="date" style="width: 80px" aria-label="input data from" name="createdFrom" value="${
+           query.createdFrom || ''
          }" /></label>
-<label>To: <input type="date" name="dateTo" value="${
-  query.dateTo || ''
-}" /></label>
+         <label>To: <input type="date" style="width: 80px" aria-label="input data To" name="createdTo" value="${
+           query.createdTo || ''
+         }" /></label>
          </th>
          <th>
-        <label>From: <input type="date" name="dateFrom" value="${
-          query.dateFrom || ''
-        }" /></label>
-<label>To: <input type="date" name="dateTo" value="${
-  query.dateTo || ''
-}" /></label>
+           <label>From: <input type="date" style="width: 80px" aria-label="input data from" name="updatedFrom" value="${
+             query.updatedFrom || ''
+           }" /></label>
+           <label>To: <input type="date" style="width: 80px" aria-label="input data To" name="updatedTo" value="${
+             query.updatedTo || ''
+           }" /></label>
          </th>
-         <th></th>
          <th>
-         <button type="submit" class="btn btn-sm btn-info">🔁 Apply filters</button>
-         <a href="/contacts" class="btn btn-sm btn-info">🔁 Reset filters</a>
+         <label>
+         <input type="text" name="contactId" aria-label="id" title="filter by id" value="${
+           query.contactId  || ''
+         }" class="form-control form-control-sm"/>
+         </label>
+         </th>
+         <th>
+         <button type="submit"  name="action" value="apply" class="btn btn-sm btn-info" style="white-space: nowrap; margin: 4px">🔁 Apply</button>
+         <button type="submit" name="action" value="reset" class="btn btn-sm btn-info" style="white-space: nowrap; margin: 4px">🔁 Reset</button>
          </th>
          </form>
          </tr>
@@ -126,13 +143,16 @@ export const renderContactsList = (
         <th>№</th>
         ${contactFields
           .map(
-            (field) => `<th>${field.label}
-        <div>
+            (field) => `<th>
+            <div style="display: flex; gap: 8px; justify-content: space-evenly;">
+            <span>${field.label}</span>
         <form method="GET" action="/contacts">
         <input type="hidden" name="sortBy" value="${field.key}"/>
-        <button type="submit" name="sortContacts" value="${
-          query.sortContacts === 'asc' ? 'desc' : 'asc'
-        }" class="btn btn-sm btn-outline-secondary">
+        <button type="submit" name="sortContacts" aria-label="sort by" title="sort by ${
+          query.sortContacts === 'asc' ? 'asc' : 'desc'
+        }" value="${
+              query.sortContacts === 'asc' ? 'desc' : 'asc'
+            }" class="btn btn-sm btn-outline-secondary">
             ${query.sortContacts === 'asc' ? '⬆️' : '⬇️'}
         </button>
         </form>
@@ -140,7 +160,19 @@ export const renderContactsList = (
         </th>`,
           )
           .join('')}
-        <th>ID</th>
+        <th> <div style="display: flex; gap: 8px; justify-content: space-evenly;">
+            <span>ID</span>
+        <form method="GET" action="/contacts">
+        <input type="hidden" name="sortBy" value="contact._id"/>
+        <button type="submit" name="sortContacts" aria-label="sort by" title="sort by ${
+          query.sortContacts === 'asc' ? 'asc' : 'desc'
+        }" value="${
+  query.sortContacts === 'asc' ? 'desc' : 'asc'
+}" class="btn btn-sm btn-outline-secondary">
+            ${query.sortContacts === 'asc' ? '⬆️' : '⬇️'}
+        </button>
+        </form>
+        </div></th>
         <th>Option</th>
         </tr>
         </thead>
@@ -167,11 +199,11 @@ export const renderContactsList = (
           <td>
           <a href="/contacts/${
             contact._id
-          }/edit" class="btn btn-sm btn-warning" onclick="event.stopPropagation()" title="Edit" aria-label="Edit">✏️Edit</a>
+          }/edit" class="btn btn-sm btn-warning" onclick="event.stopPropagation()" title="Edit" aria-label="Edit" style="margin: 4px">✏️Edit</a>
          <form method="POST" action="/contacts/${
            contact._id
          }?_method=DELETE" style="display:inline;" onclick="event.stopPropagation()">
-            <button type="submit" class="btn btn-sm btn-danger" title="Delete" aria-label="Delete">🗑️Delete</button>
+            <button type="submit" class="btn btn-sm btn-danger" title="Delete" aria-label="Delete" style="white-space: nowrap; margin: 4px">🗑️Delete</button>
           </form>
         </td>
         </tr>`,

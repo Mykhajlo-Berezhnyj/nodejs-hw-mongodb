@@ -6,7 +6,7 @@ export const contactFields = Object.entries(contactsSchema.obj).map(
     if (config.type === Boolean) {
       format = (val) => (val ? 'Yes' : 'No');
     }
-    const label = config.required ? `${key}*` : key;
+    const label = config.required ? `${key}` : key;
     const fallbackFormat = (val) =>
       val === undefined || val === null || val === '' ? 'N/A' : val;
     const finalFormat = format || fallbackFormat;

@@ -1,3 +1,5 @@
+import { isValidObjectId } from "mongoose";
+
 const parseName = (value) => {
   const isString = typeof value === 'string';
   if (isString) return value.trim();
@@ -38,15 +40,18 @@ const parseType = (type) => {
 };
 
 export const parseFilterParams = (query) => {
+  const isReset = query.action === 'reset';
+  if (isReset) return {};
   return {
     name: parseName(query.name),
     phoneNumber: parseName(query.phoneNumber),
     email: parseName(query.email),
     isFavourite: parseBoolean(query.isFavourite),
-    contactType: parseType(query.contactType),
-    dateFrom: query.dateFrom || undefined,
-    dateTo: query.dateTo || undefined,
-    // createdAt: parseNumber(query.createdAt),
-    // updatedAt: parseNumber(query.updatedAt),
+    type: parseType(query.type),
+    createdFrom: query.createdFrom || undefined,
+    createdTo: query.createdTo || undefined,
+    updatedFrom: query.updatedFrom || undefined,
+    updatedTo: query.updatedTo || undefined,
+    contactId: isValidObjectId(query.contactId) ? query.contactId : undefined,
   };
 };

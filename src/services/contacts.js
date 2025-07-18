@@ -1,6 +1,8 @@
+import mongoose from 'mongoose';
 import { SORT_CONTACTS } from '../constants/index.js';
 import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { dateRangeFilter } from '../utils/dateRangeFilter.js';
 
 export const getAllContacts = async ({
   page,
@@ -27,40 +29,41 @@ export const getAllContacts = async ({
       contactsQuery.where('email').nin(['', null]);
     } else if (filter.email === '') {
     } else {
-      contactsQuery.where('email').regex(new RegExp(filter.name, 'i'));
+      contactsQuery.where('email').regex(new RegExp(filter.email, 'i'));
     }
   }
   if (filter.isFavourite !== undefined) {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
-  if (filter.contactType) {
-    const types = Array.isArray(filter.contactType)
-      ? filter.contactType
-      : [filter.contactType];
+  if (filter.type) {
+    const types = Array.isArray(filter.type)
+      ? filter.type
+      : [filter.type];
     contactsQuery.where('contactType').in(types);
   }
-  if (filter.dateFrom || filter.dateTo) {
-    const dateFilter = {};
 
-    if (filter.dateFrom) {
-      const fromDate = new Date(filter.dateFrom);
-      if (!isNaN(fromDate)) {
-        dateFilter.$gte = fromDate;
-      }
+  contactsQuery = dateRangeFilter(
+    filter,
+    contactsQuery,
+    'createdAt',
+    'createdFrom',
+    'createdTo',
+  );
+
+  contactsQuery = dateRangeFilter(
+    filter,
+    contactsQuery,
+    'updatedAt',
+    'updatedFrom',
+    'updatedTo',
+  );
+
+  if (filter.contactId) {
+    if (mongoose.Types.ObjectId.isValid(filter.contactId)) {
+      contactsQuery.where('_id').equals(filter.contactId);
+    } else {
+      console.log('error');
     }
-
-    if (filter.dateTo) {
-      const toDate = new Date(filter.dateTo);
-      if (!isNaN(toDate)) {
-        dateFilter.$lte = toDate;
-      }
-    }
-
-    contactsQuery = contactsQuery.where('createdAt', dateFilter);
-  }
-
-  if (filter.updatedAt) {
-    contactsQuery.where('updatedAt').equals(filter.updatedAt);
   }
 
   const contactCount = await ContactsCollection.find()
@@ -70,6 +73,7 @@ export const getAllContacts = async ({
   const contacts = await contactsQuery
     .skip(skip)
     .limit(limit)
+    .collation({ locale: 'en', strength: 2 })
     .sort({ [sortBy]: sortContacts })
     .exec();
   const paginationData = calculatePaginationData(contactCount, page, perPage);
