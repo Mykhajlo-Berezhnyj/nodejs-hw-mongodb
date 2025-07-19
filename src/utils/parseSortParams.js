@@ -8,7 +8,14 @@ const parseSortContacts = (sortContacts) => {
   return SORT_CONTACTS.ASC;
 };
 
-const parseSortBy = (SortBy) => {
+const ALTERNATIVE_TO_INTERNAL_KEYS = {
+  type: 'contactType',
+  phone: 'phoneNumber',
+  number: 'phoneNumber',
+  favourite: 'isFavourite',
+};
+
+const parseSortBy = (sortBy) => {
   const keysOfContacts = [
     '_id',
     'name',
@@ -20,7 +27,9 @@ const parseSortBy = (SortBy) => {
     'updatedAt',
   ];
 
-  if (keysOfContacts.includes(SortBy)) return SortBy;
+  const internalKey = ALTERNATIVE_TO_INTERNAL_KEYS[sortBy] || sortBy;
+
+  if (keysOfContacts.includes(internalKey)) return internalKey;
   return '_id';
 };
 
