@@ -1,4 +1,4 @@
-import { isValidObjectId } from "mongoose";
+import { isValidObjectId } from 'mongoose';
 
 const parseName = (value) => {
   const isString = typeof value === 'string';
@@ -42,7 +42,7 @@ const parseType = (type) => {
 export const parseFilterParams = (query) => {
   const isReset = query.action === 'reset';
   if (isReset) return {};
-  return {
+  const filter = {
     name: parseName(query.name),
     phoneNumber: parseName(query.phoneNumber),
     email: parseName(query.email),
@@ -54,4 +54,10 @@ export const parseFilterParams = (query) => {
     updatedTo: query.updatedTo || undefined,
     contactId: isValidObjectId(query.contactId) ? query.contactId : undefined,
   };
+
+  return Object.fromEntries(
+    Object.entries(filter).filter(
+      ([_, value]) => value !== undefined && value !== '',
+    ),
+  );
 };

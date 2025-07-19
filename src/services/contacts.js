@@ -3,6 +3,7 @@ import { SORT_CONTACTS } from '../constants/index.js';
 import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { dateRangeFilter } from '../utils/dateRangeFilter.js';
+import { escapeRegExp } from '../utils/escapeRegExp.js';
 
 export const getAllContacts = async ({
   page,
@@ -20,7 +21,9 @@ export const getAllContacts = async ({
     contactsQuery.where('name').regex(new RegExp(filter.name, 'i'));
   }
   if (filter.phoneNumber) {
-    contactsQuery.where('phoneNumber').regex(new RegExp(filter.phoneNumber));
+    contactsQuery
+      .where('phoneNumber')
+      .regex(new RegExp(escapeRegExp(filter.phoneNumber)));
   }
   if (filter.email !== undefined) {
     if (filter.email === 'empty' || filter.email === 'n/a') {
@@ -36,9 +39,7 @@ export const getAllContacts = async ({
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
   if (filter.type) {
-    const types = Array.isArray(filter.type)
-      ? filter.type
-      : [filter.type];
+    const types = Array.isArray(filter.type) ? filter.type : [filter.type];
     contactsQuery.where('contactType').in(types);
   }
 
