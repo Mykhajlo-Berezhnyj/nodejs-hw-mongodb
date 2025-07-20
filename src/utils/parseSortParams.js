@@ -34,13 +34,13 @@ const parseSortBy = (sortBy) => {
 };
 
 export const parseSortParams = (query) => {
-  const { sortContacts, sortBy } = query;
+  const { sortContacts, sortOrder, sortBy } = query;
 
-  const parsedSortContacts = parseSortContacts(sortContacts);
+  const parsedSortContacts = parseSortContacts(sortContacts || sortOrder);
   const parsedSortBy = parseSortBy(sortBy);
 
   return {
-    sortContacts: parsedSortContacts,
+    sortOrder: parsedSortContacts,
     sortBy: parsedSortBy,
   };
 };

@@ -8,7 +8,7 @@ import { escapeRegExp } from '../utils/escapeRegExp.js';
 export const getAllContacts = async ({
   page,
   perPage,
-  sortContacts = SORT_CONTACTS.ASC,
+  sortOrder = SORT_CONTACTS.ASC,
   sortBy = '_id',
   filter = {},
 }) => {
@@ -75,7 +75,7 @@ export const getAllContacts = async ({
     .skip(skip)
     .limit(limit)
     .collation({ locale: 'en', strength: 2 })
-    .sort({ [sortBy]: sortContacts })
+    .sort({ [sortBy]: sortOrder })
     .exec();
   const paginationData = calculatePaginationData(contactCount, page, perPage);
 
