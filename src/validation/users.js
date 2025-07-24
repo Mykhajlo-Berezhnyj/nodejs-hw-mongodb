@@ -4,13 +4,13 @@ import { joiPasswordExtendCore } from 'joi-password';
 const JoiPassword = Joi.extend(joiPasswordExtendCore);
 
 export const registerUserSchema = Joi.object({
-  name: Joi.string().trim().min(3).max(20).required().message({
+  name: Joi.string().trim().min(3).max(20).required().messages({
     'string.base': 'Name should be a string',
     'string.min': 'Name should have at least {#limit} characters',
     'string.max': 'Name should have at most {#limit} characters',
     'string.required': 'Name should be required',
   }),
-  email: Joi.string().trim().lowercase().email().required().message({
+  email: Joi.string().trim().lowercase().email().required().messages({
     'email.email': 'Email should be valid email',
     'email.required': 'Email should be required',
   }),
@@ -36,12 +36,11 @@ export const registerUserSchema = Joi.object({
 });
 
 export const loginUserSchema = Joi.object({
-  email: Joi.string().trim().lowercase().email().required().message({
+  email: Joi.string().trim().lowercase().email().required().messages({
     'email.email': 'Email should be valid email',
     'email.required': 'Email should be required',
   }),
-  password: JoiPassword.string().required()
-    .messages({
-      'password.required': 'Password should be required',
-    }),
+  password: JoiPassword.string().required().messages({
+    'password.required': 'Password should be required',
+  }),
 });

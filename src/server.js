@@ -3,16 +3,15 @@ import pino from 'pino-http';
 import cors from 'cors';
 import { config } from './config.js';
 import router from '../src/routers/index.js';
-import { welcome } from './render/wellcome.js';
+import { welcome } from './render/welcome.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
-import { contactFields } from './db/models/contactFields.js';
 import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
 
 export const setupServer = () => {
   const app = express();
-  console.log('🚀 ~ contactFields:', contactFields);
+
   app.use(cors());
 
   app.use(
@@ -31,6 +30,8 @@ export const setupServer = () => {
 
   app.use(methodOverride('_method'));
 
+  app.use(router);
+
   app.get('/', (req, res) => {
     const accept = req.headers.accept || '';
     if (accept.includes('text/html')) {
@@ -38,10 +39,8 @@ export const setupServer = () => {
     }
     res
       .status(200)
-      .json({ status: 200, message: 'Hello. Wellcome to contacts!' });
+      .json({ status: 200, message: 'Hello. Welcome to contacts!' });
   });
-
-  app.use(router);
 
   app.use(notFoundHandler);
 

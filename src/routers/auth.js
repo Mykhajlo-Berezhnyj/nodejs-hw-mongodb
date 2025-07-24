@@ -25,6 +25,6 @@ router.post(
 
 router.post('/logout', ctrlWrapper(logoutUserController));
 
-router.post('refresh', ctrlWrapper(refreshUserSessionController));
+router.post('/refresh', ctrlWrapper(refreshUserSessionController));
 
 export default router;
