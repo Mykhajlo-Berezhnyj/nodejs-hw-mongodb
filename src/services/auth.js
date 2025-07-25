@@ -8,7 +8,10 @@ import { randomBytes } from 'crypto';
 export const registerUser = async (payload) => {
   const user = await User.findOne({ email: payload.email });
 
-  if (user) throw createHttpError(409, 'Email is use');
+  if (user)
+    throw createHttpError(409, 'Conflict error', {
+      details: 'Email is already in use',
+    });
 
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
 

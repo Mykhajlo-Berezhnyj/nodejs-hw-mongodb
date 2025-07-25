@@ -19,10 +19,11 @@ export const userSchema = new Schema(
   { timestamps: true, versionKey: false },
 );
 
-userSchema.methods.toJson = function () {
-  const obj = this.toObject();
-  delete obj.password;
-  return obj;
-};
+userSchema.set('toJSON', {
+  transform(doc, obj) {
+    delete obj.password;
+    return obj;
+  },
+});
 
 export const User = model('user', userSchema);

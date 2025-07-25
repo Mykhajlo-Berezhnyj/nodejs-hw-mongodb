@@ -15,6 +15,7 @@ export const registerUserSchema = Joi.object({
     'email.required': 'Email should be required',
   }),
   password: JoiPassword.string()
+    .trim()
     .minOfUppercase(1)
     .minOfLowercase(1)
     .minOfSpecialCharacters(1)
@@ -40,7 +41,7 @@ export const loginUserSchema = Joi.object({
     'email.email': 'Email should be valid email',
     'email.required': 'Email should be required',
   }),
-  password: JoiPassword.string().required().messages({
+  password: JoiPassword.string().trim().required().messages({
     'password.required': 'Password should be required',
   }),
 });
