@@ -85,14 +85,12 @@ export const getContactEditController = async (req, res) => {
 
 export const createContactController = async (req, res, next) => {
   const photo = req.file;
-  console.log('🚀 ~ createContactController ~ photo:', photo);
 
   let photoUrl;
 
   if (photo) {
     if (config.cloudinary.enable === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
-      console.log('🚀 ~ createContactController ~ photoUrl:', photoUrl);
     } else {
       photoUrl = await saveFileToUploadDir(photo);
     }
@@ -193,6 +191,10 @@ export const pathContactController = async (req, res) => {
     } else {
       photoUrl = await saveFileToUploadDir(photo);
     }
+  }
+
+  if ((!req.body || Object.keys(req.body).length === 0) && !photo) {
+    throw createHttpError(400, 'No fields provided to update');
   }
 
   const result = await updateContact({

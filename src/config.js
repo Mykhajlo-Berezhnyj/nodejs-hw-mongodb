@@ -22,7 +22,7 @@ export const config = {
     name: getEnvVariable('CLOUD_NAME'),
     key: getEnvVariable('API_KEY'),
     secret: getEnvVariable('API_SECRET'),
-    enable: 'ENABLE_CLOUDINARY',
+    enable: getEnvVariable('ENABLE_CLOUDINARY'),
   },
   domain: getEnvVariable('APP_DOMAIN'),
   secret: getEnvVariable('JWT_SECRET'),

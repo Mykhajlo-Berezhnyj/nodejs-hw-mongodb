@@ -10,6 +10,7 @@ cloudinary.v2.config({
   api_secret: config.cloudinary.secret,
 });
 
+
 export const saveFileToCloudinary = async (file) => {
   try {
     if (!file?.path) {
