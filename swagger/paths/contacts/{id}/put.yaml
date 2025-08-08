@@ -1,0 +1,64 @@
+tags:
+  - Contacts
+summary: Update or create (upsert)
+description: Update or create (upsert) a contact by ID, сreates a new contact if ID doesn't exist
+operationId: putContact
+parameters:
+  - in: path
+    name: id
+    required: true
+    description: ID of the contact to update
+    schema:
+      type: string
+requestBody:
+  required: true
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - name
+          - phoneNumber
+          - contactType
+        properties:
+          name:
+            description: "Contact's name"
+            type: string
+            example: John Doe
+          phoneNumber:
+            description: "Contact's phone number"
+            type: string
+            example: +380325245205
+          email:
+            description: "Contact's email"
+            type: string
+            format: email
+            example: john@example.com
+          isFavourite:
+            description: 'Contact is marked as favorite'
+            type: boolean
+            enum: [true, false]
+            default: false
+          contactType:
+            description: 'Type of contact (work, home, personal)'
+            type: string
+            enum: ['work', 'home', 'personal']
+            example: work
+            default: 'personal'
+          photo:
+            description: "Contact's photo"
+            type: string
+            format: binary
+responses:
+  '200':
+    $ref: '../../../components/responses/200.yaml'
+  '201':
+    $ref: '../../../components/responses/201.yaml'
+  '400':
+    $ref: '../../../components/responses/400.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    $ref: '../../../components/responses/404.yaml'
+  '500':
+    $ref: '../../../components/responses/500.yaml'

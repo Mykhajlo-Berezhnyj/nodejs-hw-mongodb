@@ -1,11 +1,20 @@
 import createHttpError from 'http-errors';
 
 export const validateBody = (schema) => async (req, res, next) => {
+if (!req.body || Object.keys(req.body).length === 0) {
+    return next(createHttpError(400, 'Bad request', {
+      errors: ['Please provide contact details before submitting'],
+    }));
+  }
   if (req.body && typeof req.body.isFavourite !== 'undefined') {
-    req.body.isFavourite = Boolean(req.body.isFavourite);
+    if (req.body.isFavourite === 'true') req.body.isFavourite = true;
+    else if (req.body.isFavourite === 'false') req.body.isFavourite = false;
   }
   try {
-    await schema.validateAsync(req.body, { abortEarly: false });
+    const validated = await schema.validateAsync(req.body, {
+      abortEarly: false,
+    });
+    req.body = validated;
     next();
   } catch (err) {
     const messages = err.details?.map((detail) => detail.message);

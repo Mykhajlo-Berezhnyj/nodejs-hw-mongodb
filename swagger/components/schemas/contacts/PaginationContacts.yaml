@@ -1,0 +1,32 @@
+type: object
+properties:
+  items:
+    type: array
+    items:
+      $ref: './ContactResponse.yaml'
+  page:
+    type: integer
+    example: 1
+  perPage:
+    type: integer
+    example: 10
+  totalItems:
+    type: integer
+    example: 114
+  totalPages:
+    type: integer
+    example: 12
+  hasPreviousPage:
+    type: boolean
+    example: true
+  hasNextPage:
+    type: boolean
+    example: true
+required:
+  - items
+  - page
+  - perPage
+  - totalItems
+  - totalPages
+  - hasPreviousPage
+  - hasNextPage

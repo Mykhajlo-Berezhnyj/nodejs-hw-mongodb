@@ -41,8 +41,8 @@ router.get(
 
 router.post(
   '/',
-  validateBody(createContactsSchema),
   upload.single('photo'),
+  validateBody(createContactsSchema),
   ctrlWrapper(createContactController),
 );
 

@@ -1,0 +1,29 @@
+tags:
+  - Auth
+summary: Refresh access token
+operationId: refreshUser
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          refreshToken:
+            type: string
+      example:
+        refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+responses:
+  '200':
+    description: Token refreshed
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            accessToken:
+              type: string
+  '401':
+    description: Invalid or expired refresh token
+  '500':
+    description: Server error

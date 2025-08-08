@@ -1,0 +1,29 @@
+tags:
+  - Auth
+summary: Log in a user
+operationId: loginUser
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: ../../components/schemas/user/UserLogin.yaml
+      example:
+        email: "john@example.com"
+        password: "securePassword123"
+responses:
+  '200':
+    description: Login successful
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            accessToken:
+              type: string
+            refreshToken:
+              type: string
+  '401':
+    description: Invalid credentials
+  '500':
+    description: Server error

@@ -103,7 +103,7 @@ export const createContactController = async (req, res, next) => {
   });
 
   if (!result) {
-    next(createHttpError(404, 'Student not found'));
+    next(createHttpError(404, 'Contact not found'));
     return;
   }
 
@@ -173,7 +173,7 @@ export const upsertContactController = async (req, res) => {
   }
   res.status(status).json({
     status: status,
-    message: 'Successfully update a contact!',
+     message: status === 200 ? 'Successfully updated a contact!' : 'Successfully created a contact!',
     data: result.contact,
   });
 };

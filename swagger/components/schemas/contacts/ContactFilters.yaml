@@ -1,0 +1,48 @@
+ContactFilters:
+  type: object
+  properties:
+    name:
+      type: string
+      description: Filter by contact name (partial match)
+    phoneNumber:
+      type: string
+      description: Filter by phone number (partial match)
+    email:
+      type: string
+      description: >
+        Filter by email.
+        Special values:
+        - `empty`: matches empty/null emails
+        - `n/a`: same as `empty`
+        - `*`: matches non-empty emails
+        Any other value is used for partial match (case-insensitive).
+    isFavourite:
+      type: boolean
+      description: Filter by favourite status
+    contactId:
+      type: string
+      description: Filter by contactId
+    type:
+      type: array
+      enum: ['work', 'home', 'personal']
+      items:
+        type: string
+    style: form
+    explode: true
+    description: Filter by contact type(s)
+    createdFrom:
+      type: string
+      format: date-time
+      description: Filter by created date (from)
+    createdTo:
+      type: string
+      format: date-time
+      description: Filter by created date (to)
+    updatedFrom:
+      type: string
+      format: date-time
+      description: Filter by updated date (from)
+    updatedTo:
+      type: string
+      format: date-time
+      description: Filter by updated date (to)

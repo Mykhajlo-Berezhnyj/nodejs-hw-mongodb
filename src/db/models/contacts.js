@@ -29,7 +29,7 @@ export const contactsSchema = new Schema(
     },
     photo: { type: String },
   },
-  { timestamps: true, strict: 'throw' },
+  { timestamps: true, versionKey: false, strict: 'throw' },
 );
 
 export const ContactsCollection = model('Contact', contactsSchema);
