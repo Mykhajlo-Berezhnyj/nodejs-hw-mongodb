@@ -12,18 +12,12 @@ requestBody:
           refreshToken:
             type: string
       example:
-        refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
 responses:
   '200':
-    description: Token refreshed
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            accessToken:
-              type: string
+    $ref: ../../components/responses/users/Login.yaml
   '401':
-    description: Invalid or expired refresh token
+    $ref: ../../components/responses/401.yaml
   '500':
-    description: Server error
+    $ref: ../../components/responses/500.yaml
+

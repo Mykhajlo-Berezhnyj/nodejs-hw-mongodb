@@ -20,7 +20,9 @@ export const registerUser = async (payload) => {
 
   if (user)
     throw createHttpError(409, 'Conflict error', {
-      details: 'Email is already in use',
+      data: {
+        message: 'Email is already in use',
+      },
     });
 
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
@@ -117,8 +119,7 @@ export const requestResetToken = async (email) => {
     'reset-password-email.html',
   );
 
-  const templateSource = await fs
-    .readFile(resetPasswordTemplatePath, 'utf-8');
+  const templateSource = await fs.readFile(resetPasswordTemplatePath, 'utf-8');
 
   const template = handlebars.compile(templateSource);
 
@@ -143,7 +144,9 @@ export const resetPassword = async (payload) => {
     entries = jwt.verify(payload.token, config.secret);
   } catch (err) {
     if (err instanceof Error) {
-      throw createHttpError(401, err.message);
+      throw createHttpError(401, 'Unauthorized', {
+        data: { message: err.message },
+      });
     }
     throw err;
   }

@@ -231,6 +231,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
           "401": {
             "$ref": "#/components/responses/401"
           },
@@ -331,7 +334,7 @@
                       "example": "Successfully found contact with id 65ca67e7ae7f10c88b598384!"
                     },
                     "data": {
-                      "$ref": "#/components/schemas/contact"
+                      "$ref": "#/components/schemas/ContactResponse"
                     }
                   }
                 }
@@ -420,55 +423,16 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "phoneNumber",
-                  "contactType"
-                ],
-                "properties": {
-                  "name": {
-                    "description": "Contact's name",
-                    "type": "string",
-                    "example": "John Doe"
-                  },
-                  "phoneNumber": {
-                    "description": "Contact's phone number",
-                    "type": "string",
-                    "example": 380325245205
-                  },
-                  "email": {
-                    "description": "Contact's email",
-                    "type": "string",
-                    "format": "email",
-                    "example": "john@example.com"
-                  },
-                  "isFavourite": {
-                    "description": "Contact is marked as favorite",
-                    "type": "boolean",
-                    "enum": [
-                      true,
-                      false
-                    ],
-                    "default": false
-                  },
-                  "contactType": {
-                    "description": "Type of contact (work, home, personal)",
-                    "type": "string",
-                    "enum": [
-                      "work",
-                      "home",
-                      "personal"
-                    ],
-                    "example": "work",
-                    "default": "personal"
-                  },
-                  "photo": {
-                    "description": "Contact's photo",
-                    "type": "string",
-                    "format": "binary"
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Contact",
+                    "required": [
+                      "name",
+                      "phoneNumber",
+                      "contactType"
+                    ]
                   }
-                }
+                ]
               }
             }
           }
@@ -528,7 +492,11 @@
             "$ref": "#/components/responses/401"
           },
           "404": {
-            "$ref": "#/components/responses/404"
+            "$ref": "#/components/responses/404",
+            "example": {
+              "status": 404,
+              "message": "Contact not found"
+            }
           },
           "500": {
             "$ref": "#/components/responses/500"
@@ -555,7 +523,7 @@
               "example": {
                 "name": "John Doe",
                 "email": "john@example.com",
-                "password": "securePassword123"
+                "password": "P@ssw0rd!"
               }
             }
           }
@@ -572,10 +540,16 @@
             }
           },
           "400": {
-            "description": "Invalid input or user already exists"
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
           },
           "500": {
-            "description": "Server error"
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -603,28 +577,16 @@
         },
         "responses": {
           "200": {
-            "description": "Login successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "accessToken": {
-                      "type": "string"
-                    },
-                    "refreshToken": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/Login"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
           },
           "401": {
-            "description": "Invalid credentials"
+            "$ref": "#/components/responses/401"
           },
           "500": {
-            "description": "Server error"
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -646,10 +608,10 @@
             "description": "Successfully logged out"
           },
           "401": {
-            "description": "Unauthorized"
+            "$ref": "#/components/responses/401"
           },
           "500": {
-            "description": "Server error"
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -681,25 +643,167 @@
         },
         "responses": {
           "200": {
-            "description": "Token refreshed",
+            "$ref": "#/components/responses/Login"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/send-reset-email": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Request reset password email",
+        "operationId": "requestResetEmail",
+        "requestBody": {
+          "description": "User request reset email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reset password email sent",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
                   "properties": {
-                    "accessToken": {
-                      "type": "string"
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Reset password email has been successfully sent."
+                    },
+                    "data": {
+                      "type": "object",
+                      "example": {}
                     }
                   }
                 }
               }
             }
           },
-          "401": {
-            "description": "Invalid or expired refresh token"
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
           },
           "500": {
-            "description": "Server error"
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/reset-pwd": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset user password",
+        "operationId": "resetPassword",
+        "requestBody": {
+          "description": "User reset password",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "token",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "token": {
+                    "type": "string",
+                    "example": "some-reset-token"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "NewPassw0rd!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Password has been successfully reset."
+                    },
+                    "data": {
+                      "type": "object",
+                      "example": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -713,6 +817,111 @@
       }
     },
     "schemas": {
+      "400": {
+        "type": "object",
+        "required": [
+          "status",
+          "message",
+          "data"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Bad request"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "message",
+              "errors"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Validation failed"
+              },
+              "errors": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 401
+          },
+          "message": {
+            "type": "string",
+            "example": "Unauthorized"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "message"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Session expired"
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 404
+          },
+          "message": {
+            "type": "string",
+            "example": "Not found"
+          }
+        }
+      },
+      "500": {
+        "type": "object",
+        "required": [
+          "status",
+          "message",
+          "error"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 500
+          },
+          "message": {
+            "type": "string",
+            "example": "Something went wrong"
+          },
+          "error": {
+            "type": "string",
+            "example": "Internal server error"
+          }
+        }
+      },
       "ContactResponse": {
         "type": "object",
         "required": [
@@ -877,52 +1086,6 @@
           }
         }
       },
-      "contact": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "Contact's name. Empty not allowed.",
-            "type": "string",
-            "example": "John Doe"
-          },
-          "phoneNumber": {
-            "description": "Contact's phone number. Empty not allowed.",
-            "type": "string",
-            "example": 380325245205
-          },
-          "email": {
-            "description": "Contact's email",
-            "type": "string",
-            "format": "email",
-            "example": "john@example.com"
-          },
-          "isFavourite": {
-            "description": "Contact is marked as favorite. Must be true or false. Empty not allowed.",
-            "type": "boolean",
-            "enum": [
-              true,
-              false
-            ],
-            "default": false
-          },
-          "contactType": {
-            "description": "Type of contact.  Must be: work, home, personal. Empty not allowed.",
-            "type": "string",
-            "enum": [
-              "work",
-              "home",
-              "personal"
-            ],
-            "example": "work",
-            "default": "personal"
-          },
-          "photo": {
-            "description": "Contact's photo",
-            "type": "string",
-            "format": "binary"
-          }
-        }
-      },
       "User": {
         "type": "object",
         "required": [
@@ -953,37 +1116,57 @@
       "UserResponse": {
         "type": "object",
         "required": [
-          "_id",
-          "name",
-          "email",
-          "createdAt",
-          "updatedAt"
+          "status",
+          "message",
+          "data"
         ],
         "properties": {
-          "_id": {
-            "description": "User's id",
-            "type": "string",
-            "example": "688319f519bc98717111a6b5"
+          "status": {
+            "type": "integer",
+            "description": "status code",
+            "example": 201
           },
-          "name": {
-            "description": "User's name",
+          "message": {
             "type": "string",
-            "example": "John Doe"
+            "description": "Response message",
+            "example": "Successfully registered a user!"
           },
-          "email": {
-            "description": "User's email",
-            "type": "string",
-            "example": "john@example.com"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2025-07-30T18:35:01.046Z"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2025-08-04T16:06:04.521Z"
+          "data": {
+            "type": "object",
+            "required": [
+              "_id",
+              "name",
+              "email",
+              "createdAt",
+              "updatedAt"
+            ],
+            "properties": {
+              "name": {
+                "description": "User's name",
+                "type": "string",
+                "example": "John Doe"
+              },
+              "email": {
+                "description": "User's email",
+                "type": "string",
+                "example": "john@example.com"
+              },
+              "_id": {
+                "description": "User's id",
+                "type": "string",
+                "example": "688319f519bc98717111a6b5"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-07-30T18:35:01.046Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-04T16:06:04.521Z"
+              }
+            }
           }
         }
       },
@@ -1004,6 +1187,36 @@
             "description": "User's password",
             "format": "password",
             "example": "P@ssw0rd!"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "message",
+          "data"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Successfully logged in an user!"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "accessToken"
+            ],
+            "properties": {
+              "accessToken": {
+                "type": "string",
+                "example": "myQ57pVSqU92uN0LZK3rTJRgeqIorXYcbTIlqAyT"
+              }
+            }
           }
         }
       }
@@ -1066,7 +1279,220 @@
         }
       },
       "400": {
-        "description": "Bad Request - Validation error",
+        "description": "Bad Request — the server could not process the request due to a client error.  Possible reasons include:\n  - \"Empty contact data\"\n  - \"Validation failed\" — one or more fields are invalid or missing. \n  - \"Malformed request\" — the request format is incorrect.\n\nNot all of these errors apply to every endpoint. The actual reason depends on the specific request. For more information see examples\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/400"
+            },
+            "examples": {
+              "emptyContact": {
+                "summary": "Empty data",
+                "description": "The submitted form data is empty or contains no fields. Please provide at least one valid field or file in the form before submitting the request.\n",
+                "value": {
+                  "status": 400,
+                  "message": "Bad request",
+                  "data": {
+                    "message": "Please provide data details before submitting",
+                    "errors": [
+                      "No fields were provided"
+                    ]
+                  }
+                }
+              },
+              "validationFailedContact": {
+                "summary": "All possible validation errors contact",
+                "description": "This example shows all possible validation errors for the contact request. Actual errors depend on which fields are missing or invalid.\n",
+                "value": {
+                  "status": 400,
+                  "message": "Bad request",
+                  "data": {
+                    "message": "Validation failed",
+                    "errors": [
+                      "Contact name is required",
+                      "Contact name should be a string",
+                      "Contact name should have at least 3 characters",
+                      "Contact name should have at most 20 characters",
+                      "Phone number cannot be empty",
+                      "Phone number should be a string",
+                      "Phone number must be valid for Ukraine",
+                      "Email should be required",
+                      "Email must be a valid email address",
+                      "Password should be required",
+                      "isFavourite must be a boolean value",
+                      "isFavourite cannot be empty",
+                      "Contact type is required",
+                      "Contact type cannot be empty",
+                      "Contact type must be one of work, home, or personal"
+                    ]
+                  }
+                }
+              },
+              "validationUserContact": {
+                "summary": "All possible validation errors user",
+                "description": "This example shows all possible validation errors for the user. Actual errors depend on which fields are missing or invalid.\n",
+                "value": {
+                  "status": 400,
+                  "message": "Bad request",
+                  "data": {
+                    "message": "Validation failed",
+                    "errors": [
+                      "Name should be required",
+                      "Name should be a string",
+                      "Name should have at least 3 characters",
+                      "Name should have at most 20 characters",
+                      "Phone number cannot be empty",
+                      "Phone number should be a string",
+                      "Phone number must be valid for Ukraine",
+                      "Email should be required",
+                      "Email must be a valid email address",
+                      "Password should be required",
+                      "Password must contain at least one uppercase letter",
+                      "Password must contain at least one lowercase letter",
+                      "Password must contain at least one special character",
+                      "Password must contain at least one number",
+                      "Password must not contain spaces",
+                      "Password should have at least 8 characters",
+                      "Token is required"
+                    ]
+                  }
+                }
+              },
+              "malformedRequest": {
+                "summary": "Malformed from data",
+                "description": "The submitted form data is malformed or corrupted. This can happen if the multipart/form-data is improperly encoded, or if files or fields are damaged during submission. Please check the form structure and file integrity before retrying.\n",
+                "value": {
+                  "status": 400,
+                  "message": "Bad request",
+                  "data": {
+                    "message": "Malformed request body",
+                    "errors": [
+                      "Expected double-quoted property name in JSON at position 22 (line 3 column 1)"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized — request lacks valid authentication\n The specific cause of the 401 error may vary depending on the endpoint. \n Possible reasons include:\n  - Missing or malformed Authorization header\n  - Expired or invalid access token\n  - Session not found \n  - Session expired \n  - Token expired\n  - Token invalid\n  - User not found\n\nFor more information see examples\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/401"
+            },
+            "examples": {
+              "missingHeader": {
+                "summary": "Missing Authorization header",
+                "value": {
+                  "status": 401,
+                  "message": "Unauthorized",
+                  "data": {
+                    "message": "Please provide Authorization header"
+                  }
+                }
+              },
+              "malformedToken": {
+                "summary": "Malformed Authorization header",
+                "value": {
+                  "status": 401,
+                  "message": "Unauthorized",
+                  "data": {
+                    "message": "Authorization header should be of type Bearer"
+                  }
+                }
+              },
+              "sessionNotFound": {
+                "summary": "Session not found",
+                "value": {
+                  "status": 401,
+                  "message": "Unauthorized",
+                  "data": {
+                    "message": "Session not found"
+                  }
+                }
+              },
+              "sessionExpired": {
+                "summary": "Session expired",
+                "value": {
+                  "status": 401,
+                  "message": "Unauthorized",
+                  "data": {
+                    "message": "Session expired"
+                  }
+                }
+              },
+              "tokenExpired": {
+                "summary": "jwt expired",
+                "value": {
+                  "status": 401,
+                  "message": "Unauthorized",
+                  "data": {
+                    "message": "jwt expired"
+                  }
+                }
+              },
+              "tokenInvalid": {
+                "summary": "jwt invalid",
+                "value": {
+                  "status": 401,
+                  "message": "Unauthorized",
+                  "data": {
+                    "message": "invalid signature"
+                  }
+                }
+              },
+              "userNotFound": {
+                "summary": "User not found",
+                "value": {
+                  "status": 401,
+                  "message": "Unauthorized",
+                  "data": {
+                    "message": "User not found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found — the requested resource could not be found. Possible reasons include:\n - \"Resource not found\" — the requested item does not exist.\n - \"User not found\" — no user was found for the given email or token.\n - \"Contact not found\" — no contact was found for the given contactId.\n\n Not all of these cases apply to every endpoint.\n For more information see examples\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/404"
+            },
+            "examples": {
+              "resourceNotFound": {
+                "summary": "Generic not found",
+                "value": {
+                  "status": 404,
+                  "message": "Resource not found"
+                }
+              },
+              "userNotFound": {
+                "summary": "User not found",
+                "value": {
+                  "status": 404,
+                  "message": "User not found"
+                }
+              },
+              "ContactNotFound": {
+                "summary": "Contact not found",
+                "value": {
+                  "status": 404,
+                  "message": "Contact not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "409": {
+        "description": "Conflict error — request conflicts with existing resource",
         "content": {
           "application/json": {
             "schema": {
@@ -1079,32 +1505,34 @@
               "properties": {
                 "status": {
                   "type": "integer",
-                  "example": 400
+                  "example": 409
                 },
                 "message": {
                   "type": "string",
-                  "example": "Bad request"
+                  "example": "Conflict error"
                 },
                 "data": {
                   "type": "object",
                   "required": [
-                    "message",
-                    "errors"
+                    "message"
                   ],
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Bad request"
-                    },
-                    "errors": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "example": [
-                        "Contact name is required"
-                      ]
+                      "example": "Email is already in use"
                     }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "emailInUse": {
+                "summary": "Email already exists",
+                "value": {
+                  "status": 409,
+                  "message": "Conflict error",
+                  "data": {
+                    "message": "Email is already in use"
                   }
                 }
               }
@@ -1112,54 +1540,40 @@
           }
         }
       },
-      "401": {
-        "description": "Unauthorized",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Unauthorized access"
-                }
-              }
-            }
-          }
-        }
-      },
-      "404": {
-        "description": "Contact not found",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "integer",
-                  "example": 404
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Contact not found"
-                }
-              }
-            }
-          }
-        }
-      },
       "500": {
-        "description": "Internal Server Error",
+        "description": "Internal Server Error:\n  - \"Unhandled exception\" — a generic server error.\n  - \"Database failure\" — internal service or DB error.\n",
         "content": {
           "application/json": {
             "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Something went wrong"
+              "$ref": "#/components/schemas/500"
+            },
+            "examples": {
+              "genericError": {
+                "summary": "Unhandled exception",
+                "value": {
+                  "status": 500,
+                  "message": "Something went wrong",
+                  "error": "Internal server error"
+                }
+              },
+              "dbFailure": {
+                "summary": "Database error",
+                "value": {
+                  "status": 500,
+                  "message": "Something went wrong",
+                  "error": "Failed to connect to the database"
                 }
               }
+            }
+          }
+        }
+      },
+      "Login": {
+        "description": "Successfully logged in an user",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/LoginResponse"
             }
           }
         }

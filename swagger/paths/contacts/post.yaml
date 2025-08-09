@@ -18,7 +18,8 @@ requestBody:
 
 responses:
   '201':
-    $ref: "../../components/responses/201.yaml"
+    $ref: ../../components/responses/contacts/201.yaml
+
   '400':
     $ref: '../../components/responses/400.yaml'
 

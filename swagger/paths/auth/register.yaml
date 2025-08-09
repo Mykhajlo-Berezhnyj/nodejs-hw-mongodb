@@ -11,9 +11,9 @@ requestBody:
       schema:
         $ref: ../../components/schemas/user/User.yaml
       example:
-        name: "John Doe"
-        email: "john@example.com"
-        password: "securePassword123"
+        name: 'John Doe'
+        email: 'john@example.com'
+        password: 'P@ssw0rd!'
 responses:
   '201':
     description: Successfully registered a user!
@@ -22,6 +22,10 @@ responses:
         schema:
           $ref: ../../components/schemas/user/UserResponse.yaml
   '400':
-    description: Invalid input or user already exists
+    $ref: ../../components/responses/400.yaml
+  '401':
+    $ref: ../../components/responses/401.yaml
+  '409':
+    $ref: ../../components/responses/users/409.yaml
   '500':
-    description: Server error
+    $ref: ../../components/responses/500.yaml

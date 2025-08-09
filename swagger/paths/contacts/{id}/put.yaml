@@ -15,45 +15,18 @@ requestBody:
   content:
     multipart/form-data:
       schema:
-        type: object
-        required:
-          - name
-          - phoneNumber
-          - contactType
-        properties:
-          name:
-            description: "Contact's name"
-            type: string
-            example: John Doe
-          phoneNumber:
-            description: "Contact's phone number"
-            type: string
-            example: +380325245205
-          email:
-            description: "Contact's email"
-            type: string
-            format: email
-            example: john@example.com
-          isFavourite:
-            description: 'Contact is marked as favorite'
-            type: boolean
-            enum: [true, false]
-            default: false
-          contactType:
-            description: 'Type of contact (work, home, personal)'
-            type: string
-            enum: ['work', 'home', 'personal']
-            example: work
-            default: 'personal'
-          photo:
-            description: "Contact's photo"
-            type: string
-            format: binary
+        allOf:
+          - $ref: '../../../components/schemas/contacts/Contact.yaml'
+            required:
+              - name
+              - phoneNumber
+              - contactType
+
 responses:
   '200':
-    $ref: '../../../components/responses/200.yaml'
+    $ref: '../../../components/responses/contacts/200.yaml'
   '201':
-    $ref: '../../../components/responses/201.yaml'
+    $ref: '../../../components/responses/contacts/201.yaml'
   '400':
     $ref: '../../../components/responses/400.yaml'
   '401':

@@ -1,4 +1,4 @@
-description: Contact created successfully
+description: Contact updated successfully
 content:
   application/json:
     schema:
@@ -10,9 +10,9 @@ content:
       properties:
         status:
           type: integer
-          example: 201
+          example: 200
         message:
           type: string
-          example: Successfully created a contact!
+          example: Successfully updated a contact!
         data:
-          $ref: '../schemas/contacts/ContactResponse.yaml'
+          $ref: '../../schemas/contacts/ContactResponse.yaml'

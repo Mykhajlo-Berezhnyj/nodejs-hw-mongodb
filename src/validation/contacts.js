@@ -19,7 +19,7 @@ export const createContactsSchema = Joi.object({
     .messages({
       'string.base': 'Phone number should be a string',
       'string.phoneNumber': 'Phone number must be valid for Ukraine',
-      'any.required': 'Phone number is required',
+      'any.required': 'Phone number must be required',
     }),
   email: Joi.string().trim().lowercase().email().optional().empty('').messages({
     'string.email': 'Email must be a valid email address',
@@ -51,6 +51,7 @@ export const upDateContactsSchema = Joi.object({
     .disallow('')
     .optional()
     .messages({
+      'any.invalid': 'Phone number cannot be empty',
       'string.base': 'Phone number should be a string',
       'string.phoneNumber': 'Phone number must be valid for Ukraine',
     }),
@@ -67,5 +68,6 @@ export const upDateContactsSchema = Joi.object({
     .optional()
     .messages({
       'any.only': 'Contact type must be one of work, home, or personal',
+      'any.invalid': 'Contact type cannot be empty',
     }),
 }).unknown(false);

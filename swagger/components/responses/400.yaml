@@ -1,31 +1,94 @@
-description: Bad Request - Validation error
+description: >
+  Bad Request — the server could not process the request due to a client error. 
+  Possible reasons include:
+    - "Empty contact data"
+    - "Validation failed" — one or more fields are invalid or missing. 
+    - "Malformed request" — the request format is incorrect.
+
+  Not all of these errors apply to every endpoint. The actual reason depends on the specific request.
+  For more information see examples
 content:
   application/json:
     schema:
-      type: object
-      required:
-        - status
-        - message
-        - data
-      properties:
-        status:
-          type: integer
-          example: 400
-        message:
-          type: string
-          example: Bad request
-        data:
-          type: object
-          required:
-            - message
-            - errors
-          properties:
-            message:
-              type: string
-              example: Bad request
+      $ref: ../schemas/errors/400.yaml
+    examples:
+      emptyContact:
+        summary: Empty data
+        description: >
+          The submitted form data is empty or contains no fields.
+          Please provide at least one valid field or file in the form before submitting the request.
+        value:
+          status: 400
+          message: Bad request
+          data:
+            message: Please provide data details before submitting
             errors:
-              type: array
-              items:
-                type: string
-              example:
-                - "Contact name is required"
+              - 'No fields were provided'
+      validationFailedContact:
+        summary: All possible validation errors contact
+        description: >
+          This example shows all possible validation errors for the contact request.
+          Actual errors depend on which fields are missing or invalid.
+        value:
+          status: 400
+          message: Bad request
+          data:
+            message: Validation failed
+            errors:
+              - Contact name is required
+              - Contact name should be a string
+              - Contact name should have at least 3 characters
+              - Contact name should have at most 20 characters
+              - Phone number cannot be empty
+              - Phone number should be a string
+              - Phone number must be valid for Ukraine
+              - Email should be required
+              - Email must be a valid email address
+              - Password should be required
+              - isFavourite must be a boolean value
+              - isFavourite cannot be empty
+              - Contact type is required
+              - Contact type cannot be empty
+              - Contact type must be one of work, home, or personal
+      validationUserContact:
+        summary: All possible validation errors user
+        description: >
+          This example shows all possible validation errors for the user.
+          Actual errors depend on which fields are missing or invalid.
+        value:
+          status: 400
+          message: Bad request
+          data:
+            message: Validation failed
+            errors:
+              - Name should be required
+              - Name should be a string
+              - Name should have at least 3 characters
+              - Name should have at most 20 characters
+              - Phone number cannot be empty
+              - Phone number should be a string
+              - Phone number must be valid for Ukraine
+              - Email should be required
+              - Email must be a valid email address
+              - Password should be required
+              - Password must contain at least one uppercase letter
+              - Password must contain at least one lowercase letter
+              - Password must contain at least one special character
+              - Password must contain at least one number
+              - Password must not contain spaces
+              - Password should have at least 8 characters
+              - Token is required
+      malformedRequest:
+        summary: Malformed from data
+        description: >
+          The submitted form data is malformed or corrupted.
+          This can happen if the multipart/form-data is improperly encoded,
+          or if files or fields are damaged during submission.
+          Please check the form structure and file integrity before retrying.
+        value:
+          status: 400
+          message: Bad request
+          data:
+            message: Malformed request body
+            errors:
+              - 'Expected double-quoted property name in JSON at position 22 (line 3 column 1)'

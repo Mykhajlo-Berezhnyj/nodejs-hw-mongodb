@@ -24,6 +24,7 @@ export const registerUserSchema = Joi.object({
     .min(8)
     .required()
     .messages({
+      'string.required': 'Password should be required',
       'password.minOfUppercase':
         'Password must contain at least one uppercase letter',
       'password.minOfLowercase':
