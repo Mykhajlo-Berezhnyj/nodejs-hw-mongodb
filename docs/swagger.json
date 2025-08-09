@@ -14,7 +14,7 @@
       "url": "http://localhost:3000"
     },
     {
-      "url": "http://localhost:3000"
+      "url": "https://hw7-swagger-gmlv.onrender.com"
     }
   ],
   "security": [
@@ -87,18 +87,18 @@
             }
           },
           {
-            "name": "sortOrder",
+            "name": "sortContacts",
             "in": "query",
-            "description": "Sorting order",
+            "description": "Sorting contacts",
             "required": false,
             "schema": {
               "type": "string",
               "enum": [
-                "ASC",
-                "DESC"
+                "asc",
+                "desc"
               ],
-              "default": "ASC",
-              "example": "ASC"
+              "default": "asc",
+              "example": "desc"
             }
           },
           {

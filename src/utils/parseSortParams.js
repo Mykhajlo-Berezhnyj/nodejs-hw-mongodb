@@ -2,9 +2,9 @@ import { SORT_CONTACTS } from '../constants/index.js';
 
 const parseSortContacts = (sortContacts) => {
   const isKnownSort = [SORT_CONTACTS.ASC, SORT_CONTACTS.DESC].includes(
-    sortContacts,
+    sortContacts.toLowerCase(),
   );
-  if (isKnownSort) return sortContacts;
+  if (isKnownSort) return sortContacts.toLowerCase();
   return SORT_CONTACTS.ASC;
 };
 
@@ -36,7 +36,9 @@ const parseSortBy = (sortBy) => {
 export const parseSortParams = (query) => {
   const { sortContacts, sortOrder, sortBy } = query;
 
-  const parsedSortContacts = parseSortContacts(sortContacts || sortOrder);
+  const parsedSortContacts = parseSortContacts(
+    sortContacts.toLowerCase() || sortOrder.toLowerCase(),
+  );
   const parsedSortBy = parseSortBy(sortBy);
 
   return {
