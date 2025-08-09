@@ -54,6 +54,30 @@ export const requestResetEmailSchema = Joi.object({
 });
 
 export const resetPasswordSchema = Joi.object({
-  password: Joi.string().required(),
-  token: Joi.string().required(),
+  password: JoiPassword.string()
+    .trim()
+    .minOfUppercase(1)
+    .minOfLowercase(1)
+    .minOfSpecialCharacters(1)
+    .minOfNumeric(1)
+    .noWhiteSpaces()
+    .min(8)
+    .required()
+    .messages({
+      'string.required': 'Password should be required',
+      'password.minOfUppercase':
+        'Password must contain at least one uppercase letter',
+      'password.minOfLowercase':
+        'Password must contain at least one lowercase letter',
+      'password.minOfSpecialCharacters':
+        'Password must contain at least one special character',
+      'password.minOfNumeric': 'Password must contain at least one number',
+      'password.noWhiteSpaces': 'Password must not contain spaces',
+      'password.min': 'Password should have at least {#limit} characters',
+    }),
+  token: Joi.string().required().messages({
+    'string.base': 'Token must be a string',
+    'string.empty': 'Token is required',
+    'any.required': 'Token is required',
+  }),
 });

@@ -87,18 +87,18 @@
             }
           },
           {
-            "name": "sortContacts",
+            "name": "sortOrder",
             "in": "query",
-            "description": "Sorting contacts",
+            "description": "Sorting order",
             "required": false,
             "schema": {
               "type": "string",
               "enum": [
-                "asc",
-                "desc"
+                "ASC",
+                "DESC"
               ],
-              "default": "asc",
-              "example": "desc"
+              "default": "ASC",
+              "example": "ASC"
             }
           },
           {
@@ -343,6 +343,9 @@
           },
           "401": {
             "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
           },
           "500": {
             "$ref": "#/components/responses/500"
@@ -603,9 +606,30 @@
             "bearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "refreshToken",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "204": {
             "description": "Successfully logged out"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
           },
           "401": {
             "$ref": "#/components/responses/401"
@@ -623,27 +647,53 @@
         ],
         "summary": "Refresh access token",
         "operationId": "refreshUser",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "refreshToken": {
-                    "type": "string"
-                  }
-                }
-              },
-              "example": {
-                "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-              }
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "refreshToken",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/Login"
+            "description": "Successfully refreshed session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully refreshed a session!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR..."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "401": {
             "$ref": "#/components/responses/401"
@@ -732,26 +782,19 @@
         "summary": "Reset user password",
         "operationId": "resetPassword",
         "requestBody": {
-          "description": "User reset password",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "required": [
-                  "email",
                   "token",
                   "password"
                 ],
                 "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "user@example.com"
-                  },
                   "token": {
                     "type": "string",
-                    "example": "some-reset-token"
+                    "example": "yeJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODg4ZDgwYzg2ZjZkNTExNDBlZDJlNTIiLCJlbWFpbCI6ImJtdmUyMUB1a3IubmV0IiwiaWF0IjoxNzUzODY1NzIwLCJleHAiOjE3NTM4NjYwMjB9.Xp60X675SgqtwhR9_QSQwNmNXdnathXTAXH0mlP5xpg5"
                   },
                   "password": {
                     "type": "string",

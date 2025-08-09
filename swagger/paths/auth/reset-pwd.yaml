@@ -3,24 +3,18 @@ tags:
 summary: Reset user password
 operationId: resetPassword
 requestBody:
-  description: User reset password
   required: true
   content:
     application/json:
       schema:
         type: object
         required:
-          - email
           - token
           - password
         properties:
-          email:
-            type: string
-            format: email
-            example: user@example.com
           token:
             type: string
-            example: some-reset-token
+            example: yeJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODg4ZDgwYzg2ZjZkNTExNDBlZDJlNTIiLCJlbWFpbCI6ImJtdmUyMUB1a3IubmV0IiwiaWF0IjoxNzUzODY1NzIwLCJleHAiOjE3NTM4NjYwMjB9.Xp60X675SgqtwhR9_QSQwNmNXdnathXTAXH0mlP5xpg5
           password:
             type: string
             format: password

@@ -2,22 +2,38 @@ tags:
   - Auth
 summary: Refresh access token
 operationId: refreshUser
-requestBody:
-  required: true
-  content:
-    application/json:
-      schema:
-        type: object
-        properties:
-          refreshToken:
-            type: string
-      example:
-        refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+parameters:
+  - name: sessionId
+    in: cookie
+    required: true
+    schema:
+      type: string
+  - name: refreshToken
+    in: cookie
+    required: true
+    schema:
+      type: string
 responses:
   '200':
-    $ref: ../../components/responses/users/Login.yaml
+    description: Successfully refreshed session
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully refreshed a session!
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR...
   '401':
     $ref: ../../components/responses/401.yaml
   '500':
     $ref: ../../components/responses/500.yaml
-
